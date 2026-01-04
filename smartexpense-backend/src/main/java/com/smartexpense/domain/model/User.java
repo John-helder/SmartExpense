@@ -37,10 +37,12 @@ public class User {
 
     @PrePersist
     private void prePersist(){
+
         this.createdAt = LocalDateTime.now();
     }
 
     public void updateRole(UserRole newRole) {
+
         this.role = newRole;
     }
 

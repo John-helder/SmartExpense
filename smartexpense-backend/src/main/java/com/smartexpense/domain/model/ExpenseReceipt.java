@@ -2,23 +2,25 @@ package com.smartexpense.domain.model;
 
 import com.smartexpense.domain.enums.ExpenseReceiptStatus;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.logging.Level;
 
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "expense_receipts")
 public class ExpenseReceipt {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -38,8 +40,14 @@ public class ExpenseReceipt {
         this.status = ExpenseReceiptStatus.PROCESSING;
         this.createdAt = LocalDateTime.now();
     }
+    @PrePersist
+    private void prePersist(){
+
+        this.createdAt = LocalDateTime.now();
+    }
 
     public void updateStatus(ExpenseReceiptStatus newStatus){
+
         this.status = newStatus;
     }
 }
