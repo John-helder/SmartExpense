@@ -1,15 +1,17 @@
 package com.smartexpense.domain.model;
 
-import com.smartexpense.domain.enums.UserRole;
-import lombok.*;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
+
 @Getter
-@Entity
-@Table(name = "users")
 @NoArgsConstructor
-public class User {
+@Entity
+@Table(name = "companies")
+public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,29 +20,28 @@ public class User {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @Column(nullable = false, unique = true, length = 14)
+    private String cnpj;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRole role;
+    private Boolean active;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public User(String name, String email, UserRole role) {
+    public Company(Expense expense,
+                   String name,
+                   String cnpj,
+                   Boolean active
+    ) {
+        this.expense = expense;
         this.name = name;
-        this.email = email;
-        this.role = role;
-    }
-
-    public void updateRole(UserRole newRole) {
-        this.role = newRole;
+        this.cnpj = cnpj;
+        this.active = active;
     }
 
     @PrePersist
-    private void prePersist() {
+    private void prePersist () {
         this.createdAt = LocalDateTime.now();
     }
-
 }

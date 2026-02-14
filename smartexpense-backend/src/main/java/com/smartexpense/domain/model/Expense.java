@@ -1,20 +1,21 @@
 package com.smartexpense.domain.model;
 
-import com.smartexpense.domain.enums.ExpenseReceiptStatus;
+import com.smartexpense.domain.enums.ExpenseStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.logging.Level;
 
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "expense_receipts")
-public class ExpenseReceipt {
+@Table(name = "expenses")
+public class Expense {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,30 +25,33 @@ public class ExpenseReceipt {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+
     @Column(nullable = false)
-    private String filePath;
+    private BigDecimal amount;
+
+    @Column(nullable = false)
+    private LocalDate expenseDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ExpenseReceiptStatus status;
+    private ExpenseStatus status;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    public ExpenseReceipt (User user, String filePath) {
+    public Expense(User user, Company company, BigDecimal amount, LocalDate expenseDate) {
         this.user = user;
-        this.filePath = filePath;
-        this.status = ExpenseReceiptStatus.PROCESSING;
-        this.createdAt = LocalDateTime.now();
+        this.company = company;
+        this.amount = amount;
+        this.expenseDate = expenseDate;
+        this.status = ExpenseStatus.UNDER_REVIEW;
     }
     @PrePersist
     private void prePersist(){
-
         this.createdAt = LocalDateTime.now();
-    }
-
-    public void updateStatus(ExpenseReceiptStatus newStatus){
-
-        this.status = newStatus;
     }
 }
