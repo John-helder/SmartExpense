@@ -34,7 +34,6 @@ public class Company {
                    String cnpj,
                    Boolean active
     ) {
-        this.expense = expense;
         this.name = name;
         this.cnpj = cnpj;
         this.active = active;
