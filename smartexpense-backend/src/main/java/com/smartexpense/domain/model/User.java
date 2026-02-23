@@ -1,7 +1,7 @@
 package com.smartexpense.domain.model;
 
 import com.smartexpense.domain.enums.UserRole;
-import com.smartexpense.dto.UserResgiterDTO;
+import com.smartexpense.dto.RegisterRequestDTO;
 import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Collection;
 
 
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,6 +19,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
+@EnableMethodSecurity
 public class User implements UserDetails {
 
     @Id
@@ -40,14 +42,11 @@ public class User implements UserDetails {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public User(String name, String email, String password, UserRole role) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
-
-    public User(UserResgiterDTO dados, String encryptedPassword) {
+    public User(RegisterRequestDTO dados, String encryptedPassword ) {
+        this.name = dados.nome();
+        this.email = dados.email();
+        this.password = encryptedPassword;
+        this.role = UserRole.getDefault();
     }
 
     public void updateRole(UserRole newRole) {
